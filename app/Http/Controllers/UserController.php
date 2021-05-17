@@ -11,10 +11,32 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = \App\User::paginate(1); 
-        return view('users.index', ['users' => $users]); 
+
+        $filterKeyword = $request->get('keyword');
+
+        $status = $request->get('status');
+        
+        if($status){
+            $users = \App\User::where('status', $status)->paginate(10);
+        } else {
+            $users = \App\User::paginate(10);
+        }
+
+        if($filterKeyword){
+            if($status){
+                $users = \App\User::where('email', 'LIKE', "%$filterKeyword%")
+                    ->where('status', $status)
+                    ->paginate(10);
+            } else {
+                $users = \App\User::where('email', 'LIKE', "%$filterKeyword%")
+                    ->paginate(10);
+            }
+        }
+
+    return view('users.index', ['users' => $users]);
+
     }
 
     /**
