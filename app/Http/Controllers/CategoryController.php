@@ -178,4 +178,13 @@ class CategoryController extends Controller
         } 
     }
 
+    public function ajaxSearch(Request $request)
+    {
+        $keyword = $request->get('q');
+        $categories = \App\Category::where("name", "LIKE", "%$keyword%")->get();
+        return $categories;
+
+}
+
+
 }
